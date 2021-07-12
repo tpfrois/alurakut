@@ -21,13 +21,18 @@ function Link({ href, children, ...props }) {
 // ================================================================================================================
 export function AlurakutMenu({ githubUser }) {
   const [isMenuOpen, setMenuState] = React.useState(false);
+  const links = [
+    {name: 'Inicio', slug: '/'}, 
+    {name: 'Amigos', slug: '/amigos'}, 
+    {name: 'Comunidades', slug: '/comunidades'}
+  ];
+
   return (
     <AlurakutMenu.Wrapper isMenuOpen={isMenuOpen}>
       <div className="container">
         <AlurakutMenu.Logo src={`${BASE_URL}/logo.svg`} />
-
         <nav style={{ flex: 1 }}>
-          {[{ name: 'Inicio', slug: '/'}, {name: 'Amigos', slug: '/amigos'}, {name: 'Comunidades', slug: '/comunidades'}].map((menuItem) => (
+          {links.map((menuItem) => (
             <Link key={`key__${menuItem.name.toLocaleLowerCase()}`} href={`${menuItem.slug.toLocaleLowerCase()}`}>
               {menuItem.name}
             </Link>
@@ -52,9 +57,11 @@ export function AlurakutMenu({ githubUser }) {
     </AlurakutMenu.Wrapper>
   )
 }
+
 AlurakutMenu.Wrapper = styled.header`
   width: 100%;
   background-color: #308BC5;
+
   .alurakutMenuProfileSidebar {
     background: white;
     position: fixed;
@@ -68,16 +75,20 @@ AlurakutMenu.Wrapper = styled.header`
     pointer-events: ${({ isMenuOpen }) => isMenuOpen ? 'all' : 'none'};
     opacity: ${({ isMenuOpen }) => isMenuOpen ? '1' : '0'};
     transform: ${({ isMenuOpen }) => isMenuOpen ? 'translateY(0)' : 'translateY(calc(-100% - 48px))'};
+
     @media(min-width: 860px) {
       display: none;
     }
+
     > div {
       max-width: 400px;
       margin: auto;
     }
+
     a {
       font-size: 18px;
     }
+
     .boxLink {
       font-size: 18px;
       color: #2E7BB4;
@@ -85,6 +96,7 @@ AlurakutMenu.Wrapper = styled.header`
       text-decoration: none;
       font-weight: 800;
     }
+
     hr {
       margin-top: 12px;
       margin-bottom: 8px;
@@ -92,6 +104,7 @@ AlurakutMenu.Wrapper = styled.header`
       border-bottom-color: #ECF2FA;
     }
   }
+
   .container {
     background-color: #308BC5;
     padding: 7px 16px;
@@ -101,9 +114,11 @@ AlurakutMenu.Wrapper = styled.header`
     justify-content: space-between;
     position: relative;
     z-index: 101;
+
     @media(min-width: 860px) {
       justify-content: flex-start;
     }
+
     button {
       border: 0;
       background: transparent;
@@ -113,17 +128,21 @@ AlurakutMenu.Wrapper = styled.header`
         display: none;
       }
     }
+
     nav {
       display: none;
+
       @media(min-width: 860px) {
         display: flex;
       }
+
       a {
         font-size: 12px;
         color: white;
         padding: 10px 16px;
         position: relative;
         text-decoration: none;
+
         &:after {
           content: " ";
           background-color: #5292C1;
@@ -138,6 +157,7 @@ AlurakutMenu.Wrapper = styled.header`
         }
       }
     }
+
     input {
       color: #ffffff;
       background: #5579A1;
@@ -155,6 +175,7 @@ AlurakutMenu.Wrapper = styled.header`
     } 
   }
 `;
+
 AlurakutMenu.Logo = styled.img`
   background-color: #ffffff;
   padding: 9px 14px;
@@ -219,6 +240,7 @@ export function AlurakutProfileSidebarMenuDefault() {
     </AlurakutProfileSidebarMenuDefault.Wrapper>
   )
 }
+
 AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
   a {
     font-size: 12px;
@@ -228,6 +250,7 @@ AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
     align-items: center;
     justify-content: flex-start;
     text-decoration: none;
+
     img {
       width: 16px;
       height: 16px;
@@ -240,15 +263,22 @@ AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
 // OrkutNostalgicIconSet
 // ================================================================================================================
 export function OrkutNostalgicIconSet(props) {
+  const icons = [
+    { name: 'Recados', slug: 'recados', icon: 'book' },
+    { name: 'Fotos', slug: 'fotos', icon: 'camera' },
+    { name: 'Videos', slug: 'videos', icon: 'video-camera' },
+    { name: 'Fãs', slug: 'fas', icon: 'star' },
+    { name: 'Mensagens', slug: 'mensagens', icon: 'email' },
+  ];
+  const stats = [
+    { name: 'Confiável', slug: 'confiavel', icon: 'smile' },
+    { name: 'Legal', slug: 'legal', icon: 'cool' },
+    { name: 'Sexy', slug: 'sexy', icon: 'heart' },
+  ];
+
   return (
     <OrkutNostalgicIconSet.List>
-      {[
-        { name: 'Recados', slug: 'recados', icon: 'book' },
-        { name: 'Fotos', slug: 'fotos', icon: 'camera' },
-        { name: 'Videos', slug: 'videos', icon: 'video-camera' },
-        { name: 'Fãs', slug: 'fas', icon: 'star' },
-        { name: 'Mensagens', slug: 'mensagens', icon: 'email' },
-      ].map(({ name, slug, icon }) => (
+      {icons.map(({ name, slug, icon }) => (
         <li key={`orkut__icon_set__${slug}`}>
           <span style={{ gridArea: 'title' }} className="OrkutNostalgicIconSet__title">
             {name}
@@ -259,12 +289,9 @@ export function OrkutNostalgicIconSet(props) {
           </span>
         </li>
       ))}
-      {[
-        { name: 'Confiável', slug: 'confiavel', icon: 'smile' },
-        { name: 'Legal', slug: 'legal', icon: 'cool' },
-        { name: 'Sexy', slug: 'sexy', icon: 'heart' },
-      ].map(({ name, slug, icon }) => {
+      {stats.map(({ name, slug, icon }) => {
         const total = props[slug] ? props[slug] : 2;
+
         return (
           <li key={`orkut__icon_set__${slug}`}>
             <span className="OrkutNostalgicIconSet__title">
@@ -282,12 +309,14 @@ export function OrkutNostalgicIconSet(props) {
     </OrkutNostalgicIconSet.List>
   )
 }
+
 OrkutNostalgicIconSet.List = styled.ul`
   margin-top: 32px;
   list-style: none;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+
   li {
     font-size: 12px;
     color: #5A5A5A;
@@ -299,15 +328,18 @@ OrkutNostalgicIconSet.List = styled.ul`
     &:not(:last-child) {
       margin-right: 5px;
     }
+
     .OrkutNostalgicIconSet__title {
       display: block;
       font-style: italic; 
     }
+
     .OrkutNostalgicIconSet__number {
       min-width: 15px;
       display: flex;
       align-items: center;
       justify-content: flex-start;
+
       .OrkutNostalgicIconSet__iconSample {
         margin-right: 7px;
       }
@@ -334,6 +366,7 @@ const AlurakutLoginScreen = css`
     --textQuarternaryColor: #C5C6CA;
     --commonRadius: 8px;
   }
+
   .loginScreen {
     padding: 16px;
     max-width: 1110px;
@@ -352,6 +385,7 @@ const AlurakutLoginScreen = css`
               "logoArea formArea"
               "footerArea footerArea";
     }
+
     .logoArea {
       grid-area: logoArea;
       background-color: var(--backgroundTertiary);
@@ -364,9 +398,11 @@ const AlurakutLoginScreen = css`
       justify-content: center;
       align-items: center;
       min-height: 263px;
+
       @media(min-width: 860px) {
         min-height: 368px;
       }
+
       p {
         font-size: 12px;
         line-height: 1.2;
@@ -382,11 +418,13 @@ const AlurakutLoginScreen = css`
         margin-bottom: 36px;
       }
     }
+
     .formArea {
       grid-area: formArea;
       display: flex;
       flex-wrap: wrap;
       flex-direction: column;
+
       .box {
         display: flex;
         flex-direction: column;
@@ -399,22 +437,27 @@ const AlurakutLoginScreen = css`
         background-color: var(--backgroundSecondary);
         border-radius: var(--commonRadius);
         flex: 1;
+
         &:not(:last-child) {
           margin-bottom: var(--gap);
         }
+
         &:first-child {
           min-height: 224px;
           @media(min-width: 860px) {
             min-height: 282px;
           }
         }
+
         p {
           font-size: 14px;
         }
+
         a {
           text-decoration: none;
           color: var(--colorPrimary);
         }
+
         input {
           width: 100%;
           display: block;
@@ -425,6 +468,7 @@ const AlurakutLoginScreen = css`
           margin-top: 24px;
           margin-bottom: 16px;
         }
+
         button {
           width: 100%;
           display: block;
@@ -436,11 +480,13 @@ const AlurakutLoginScreen = css`
         }
       }
     }
+
     .footerArea {
       grid-area: footerArea;
       background-color: var(--backgroundQuarternary);
       border-radius: var(--commonRadius);
       padding: 8px;
+      
       p {
         font-size: 12px;
         text-align: center;

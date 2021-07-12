@@ -35,7 +35,7 @@ export default function Home() {
         <Column className="welcomeArea" gridArea={"welcomeArea"}>
           <Box>
             <h1 className="title">Bem-Vindo(a)</h1>
-            <OrkutNostalgicIconSet />
+            <OrkutNostalgicIconSet confiavel={3} legal={3} sexy={3} />
           </Box>
         </Column>
 
