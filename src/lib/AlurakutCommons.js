@@ -270,6 +270,7 @@ export function OrkutNostalgicIconSet(props) {
     { name: 'Fãs', slug: 'fas', icon: 'star' },
     { name: 'Mensagens', slug: 'mensagens', icon: 'email' },
   ];
+  
   const stats = [
     { name: 'Confiável', slug: 'confiavel', icon: 'smile' },
     { name: 'Legal', slug: 'legal', icon: 'cool' },
@@ -486,7 +487,7 @@ const AlurakutLoginScreen = css`
       background-color: var(--backgroundQuarternary);
       border-radius: var(--commonRadius);
       padding: 8px;
-      
+
       p {
         font-size: 12px;
         text-align: center;
