@@ -1,73 +1,162 @@
-import React, {useState, useEffect} from 'react';
-import styled from 'styled-components'
+import React, { useState, useEffect } from "react";
 
-import { AlurakutMenu, OrkutNostalgicIconSet, AlurakutMenuProfileSidebar } from '../src/lib/AlurakutCommons';
-import { MainGrid, GridColumn } from '../src/components/MainGrid';
-import { Box } from '../src/components/Box';
-import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations';
-import { formatWithValidation } from 'next/dist/next-server/lib/utils';
+import {
+  AlurakutMenu,
+  OrkutNostalgicIconSet,
+  AlurakutProfileSidebarMenuDefault,
+} from "../src/lib/AlurakutCommons";
+import { MainGrid, GridColumn } from "../src/components/MainGrid";
+import { Box } from "../src/components/Box";
+import { ProfileRelationsBoxWrapper } from "../src/components/ProfileRelations";
+import ProfileCardList from "../src/components/ProfileCardList";
 
 const URL_GITHUBAPI = `https://api.github.com`;
+const GARTIC_HELPER_IMG =
+  "https://github.com/tpfrois/gartichelper/blob/main/public/icons/favicon-310.png?raw=true";
 
-const ProfileSidebar = ({githubUser}) => {
+const ProfileSidebar = ({ githubUser }) => {
   return (
-    <Box>
-      <img src={`https://www.github.com/${githubUser}.png`} 
-      alt={githubUser}
-      style={{borderRadius: '8px'}}/>
+    <Box as="aside">
+      <img
+        src={`https://www.github.com/${githubUser}.png`}
+        alt={githubUser}
+        style={{ borderRadius: "8px" }}
+      />
+      <hr />
+      <p>
+        <a className="boxLink" href={`https://www.github.com/${githubUser}`}>
+          @{githubUser}
+        </a>
+      </p>
+      <hr />
+      <AlurakutProfileSidebarMenuDefault />
     </Box>
-  )
-}
+  );
+};
 
 export default function Home() {
   const githubUser = "tpfrois";
-  const [userData, setUserData] = useState(undefined);
+  const [githubUserData, setGithubUserData] = useState(undefined);
+  const [imageUpload, setImageUpload] = useState(true);
+  const [communities, setCommunities] = useState([
+    {
+      id: 0,
+      title: "Gartic Helper",
+      image: GARTIC_HELPER_IMG,
+      link: "https://gartichelper.me",
+    },
+  ]);
 
   useEffect(() => {
     fetch(`${URL_GITHUBAPI}/users/${githubUser}`)
       .then(res => res.json())
-      .then(data => setUserData(prevUserData => ({...prevUserData, ...data})));
+      .then(data =>
+        setGithubUserData(prevUserData => ({ ...prevUserData, ...data }))
+      );
 
     fetch(`${URL_GITHUBAPI}/users/${githubUser}/following`)
       .then(res => res.json())
-      .then(data => setUserData(prevUserData => ({...prevUserData, followingUsers: data})));
-  }, [githubUser])
-  
+      .then(data =>
+        setGithubUserData(prevUserData => ({
+          ...prevUserData,
+          followingUsers: data,
+        }))
+      );
+  }, [githubUser]);
+
+  const handleNewCommunity = e => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const imageFile = formData.get("file");
+    const community = {
+      id: new Date().toISOString(),
+      title: formData.get("title"),
+      image: imageFile ? URL.createObjectURL(imageFile) : formData.get("image"),
+      link: formData.get("link"),
+    };
+    setCommunities(oldCommunities => [...oldCommunities, community]);
+  };
+
   return (
     <>
-      <AlurakutMenu />
+      <AlurakutMenu githubUser={githubUser} />
       <MainGrid>
         <GridColumn className="profileArea" gridArea={"profileArea"}>
-         <ProfileSidebar githubUser={githubUser} />
+          <ProfileSidebar githubUser={githubUser} />
         </GridColumn>
 
         <GridColumn className="welcomeArea" gridArea={"welcomeArea"}>
           <Box>
-            <h1 className="title">Bem-Vindo(a) {userData && userData.name}</h1>
+            <h1 className="title">
+              Bem-Vindo(a) {githubUserData && githubUserData.name}
+            </h1>
             <OrkutNostalgicIconSet confiavel={3} legal={3} sexy={3} />
+          </Box>
+          <Box>
+            <h2 className="subTitle">O que você deseja fazer?</h2>
+            <form onSubmit={handleNewCommunity}>
+              <div>
+                <input
+                  type="text"
+                  name="title"
+                  aria-label="Qual vai ser o nome da sua comunidade?"
+                  placeholder="Qual vai ser o nome da sua comunidade?"
+                  required
+                />
+              </div>
+              <button
+                onClick={() =>
+                  setImageUpload(prevImageUpload => !prevImageUpload)
+                }
+                type="button"
+              >
+                {imageUpload
+                  ? "Utilizar URL de Imagem"
+                  : "Enviar uma imagem do computador"}
+              </button>
+              <div>
+                {imageUpload ? (
+                  <input
+                    type="file"
+                    name="file"
+                    accept="image/png, image/jpeg"
+                  />
+                ) : (
+                  <input
+                    type="url"
+                    name="image"
+                    aria-label="Coloque uma URL ou envie uma imagem para usarmos de capa"
+                    placeholder="Coloque uma URL ou envie uma imagem  para usarmos de capa"
+                    required
+                  />
+                )}
+              </div>
+              <div>
+                <input
+                  type="url"
+                  name="link"
+                  aria-label="Coloque um link para a comunidade"
+                  placeholder="Coloque um link para a comunidade"
+                  required
+                />
+              </div>
+              <button>Criar comunidade</button>
+            </form>
           </Box>
         </GridColumn>
 
         <GridColumn className="relationsArea" gridArea={"relationsArea"}>
-          <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">Meus Amigos ({userData && userData.following})</h2>
-            <ul>
-            {userData?.followingUsers && userData.followingUsers.slice(0,6).map(user => (
-              <li key={user.login}>
-                <a href={`/users/${user.login}`}>
-                  <img src={`https://www.github.com/${user.login}.png`} alt={user.login} />
-                  <span>{user.login}</span>
-                </a>
-              </li>
-            ))}
-            </ul>
-          </ProfileRelationsBoxWrapper>
-
-          <Box>
-            <h2 className="smallTitle">Minhas Comundiades</h2>
-          </Box>
+          <ProfileCardList
+            title="Meus Amigos"
+            list={githubUserData?.followingUsers}
+          />
+          <ProfileCardList
+            title="Minhas Comunidades"
+            list={communities}
+            isCommunity
+          />
         </GridColumn>
       </MainGrid>
-    </> 
-    )
+    </>
+  );
 }
