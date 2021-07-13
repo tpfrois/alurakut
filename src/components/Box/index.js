@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Box = styled.div`
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 8px;
   padding: 16px;
   /* CSS Pré-Pronto */
@@ -9,7 +9,7 @@ export const Box = styled.div`
 
   .boxLink {
     font-size: 14px;
-    color: #2E7BB4;
+    color: #2e7bb4;
     text-decoration: none;
     font-weight: 800;
   }
@@ -34,16 +34,22 @@ export const Box = styled.div`
     margin-bottom: 20px;
   }
 
+  .counter,
+  .seeAll {
+    font-weight: 700;
+    color: #2e7bb4;
+  }
+
   hr {
     margin-top: 12px;
     margin-bottom: 8px;
     border-color: transparent;
-    border-bottom-color: #ECF2FA;
+    border-bottom-color: #ecf2fa;
   }
 
   input {
     width: 100%;
-    background-color: #F4F4F4;
+    background-color: #f4f4f4;
     color: #333333;
     border: 0;
     padding: 14px 16px;
@@ -54,12 +60,12 @@ export const Box = styled.div`
       opacity: 1;
     }
   }
-  
+
   button {
     border: 0;
     padding: 8px 12px;
-    color: #FFFFFF;
+    color: #ffffff;
     border-radius: 10000px;
-    background-color: #6F92BB;
+    background-color: #6f92bb;
   }
-`; 
+`;

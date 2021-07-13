@@ -56,12 +56,18 @@ export default function Home() {
 
     fetch(`${URL_GITHUBAPI}/users/${githubUser}/following`)
       .then(res => res.json())
-      .then(data =>
+      .then(data => {
+        const cardUsers = data.map(user => ({
+          id: user.login,
+          title: user.login,
+          image: user.avatar_url,
+          link: user.html_url,
+        }));
         setGithubUserData(prevUserData => ({
           ...prevUserData,
-          followingUsers: data,
-        }))
-      );
+          followingUsers: cardUsers,
+        }));
+      });
   }, [githubUser]);
 
   const handleNewCommunity = e => {
@@ -150,11 +156,7 @@ export default function Home() {
             title="Meus Amigos"
             list={githubUserData?.followingUsers}
           />
-          <ProfileCardList
-            title="Minhas Comunidades"
-            list={communities}
-            isCommunity
-          />
+          <ProfileCardList title="Minhas Comunidades" list={communities} />
         </GridColumn>
       </MainGrid>
     </>

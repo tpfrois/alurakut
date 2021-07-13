@@ -1,13 +1,13 @@
-import { createGlobalStyle, ThemeProvider } from 'styled-components';
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 
-import { AlurakutStyles } from '../src/lib/AlurakutCommons'; 
+import { AlurakutStyles } from "../src/lib/AlurakutCommons";
 
 const GlobalStyle = createGlobalStyle`
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: sans-serif;
+    font-family: "Rubik", sans-serif;
   }
   
   body {
@@ -35,13 +35,13 @@ const GlobalStyle = createGlobalStyle`
   }
 
   ${AlurakutStyles}
-`
+`;
 
 const theme = {
   colors: {
-    primary: '#0070f3',
+    primary: "#0070f3",
   },
-}
+};
 
 export default function App({ Component, pageProps }) {
   return (
@@ -51,5 +51,5 @@ export default function App({ Component, pageProps }) {
         <Component {...pageProps} />
       </ThemeProvider>
     </>
-  )
+  );
 }
