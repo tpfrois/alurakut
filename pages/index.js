@@ -1,86 +1,86 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 import {
   AlurakutMenu,
   OrkutNostalgicIconSet,
-  AlurakutProfileSidebarMenuDefault,
 } from "../src/lib/AlurakutCommons";
 import { MainGrid, GridColumn } from "../src/components/MainGrid";
 import { Box } from "../src/components/Box";
-import { ProfileRelationsBoxWrapper } from "../src/components/ProfileRelations";
+import ProfileSidebar from "../src/components/ProfileSidebar";
 import ProfileCardList from "../src/components/ProfileCardList";
 
-const URL_GITHUBAPI = `https://api.github.com`;
+import { getUser, getUserFollowing } from "../src/services/github";
+
 const GARTIC_HELPER_IMG =
   "https://github.com/tpfrois/gartichelper/blob/main/public/icons/favicon-310.png?raw=true";
 
-const ProfileSidebar = ({ githubUser }) => {
-  return (
-    <Box as="aside">
-      <img
-        src={`https://www.github.com/${githubUser}.png`}
-        alt={githubUser}
-        style={{ borderRadius: "8px" }}
-      />
-      <hr />
-      <p>
-        <a className="boxLink" href={`https://www.github.com/${githubUser}`}>
-          @{githubUser}
-        </a>
-      </p>
-      <hr />
-      <AlurakutProfileSidebarMenuDefault />
-    </Box>
-  );
-};
-
-export default function Home() {
+export default function Home(client) {
   const githubUser = "tpfrois";
   const [githubUserData, setGithubUserData] = useState(undefined);
-  const [imageUpload, setImageUpload] = useState(true);
+  const [imageUpload, setImageUpload] = useState(false);
   const [communities, setCommunities] = useState([
     {
       id: 0,
       title: "Gartic Helper",
-      image: GARTIC_HELPER_IMG,
-      link: "https://gartichelper.me",
+      imageUrl: GARTIC_HELPER_IMG,
+      url: "https://gartichelper.me",
+      creatorSlug: "tpfrois",
     },
   ]);
 
   useEffect(() => {
-    fetch(`${URL_GITHUBAPI}/users/${githubUser}`)
-      .then(res => res.json())
-      .then(data =>
-        setGithubUserData(prevUserData => ({ ...prevUserData, ...data }))
-      );
+    // Get initial user data
+    (async () => {
+      const userData = await getUser(githubUser);
+      setGithubUserData(userData);
 
-    fetch(`${URL_GITHUBAPI}/users/${githubUser}/following`)
-      .then(res => res.json())
-      .then(data => {
-        const cardUsers = data.map(user => ({
-          id: user.login,
-          title: user.login,
-          image: user.avatar_url,
-          link: user.html_url,
-        }));
-        setGithubUserData(prevUserData => ({
-          ...prevUserData,
-          followingUsers: cardUsers,
-        }));
-      });
+      const userFollowing = await getUserFollowing(githubUser);
+
+      const cardUsers = userFollowing.map(user => ({
+        id: user.login,
+        title: user.login,
+        imageUrl: user.avatar_url,
+        url: user.html_url,
+      }));
+
+      setGithubUserData(prevUserData => ({
+        ...prevUserData,
+        followingUsers: cardUsers,
+      }));
+    })();
   }, [githubUser]);
 
-  const handleNewCommunity = e => {
+  useEffect(() => {
+    // Get initial communities
+    (async () => {
+      const { data } = await axios.get("/api/communities");
+      const communities = data.communities;
+      setCommunities(oldCommunities => [...oldCommunities, ...communities]);
+    })();
+  }, []);
+
+  const handleNewCommunity = async e => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const imageFile = formData.get("file");
+
     const community = {
-      id: new Date().toISOString(),
       title: formData.get("title"),
-      image: imageFile ? URL.createObjectURL(imageFile) : formData.get("image"),
-      link: formData.get("link"),
+      imageUrl: formData.get("imageUrl"),
+      url: formData.get("link"),
+      creatorSlug: githubUser,
+      image: null,
     };
-    setCommunities(oldCommunities => [...oldCommunities, community]);
+
+    try {
+      const { data } = await axios.post("/api/communities", community);
+      setCommunities(oldCommunities => [
+        ...oldCommunities,
+        { id: data.data.id, ...community },
+      ]);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -115,6 +115,7 @@ export default function Home() {
                   setImageUpload(prevImageUpload => !prevImageUpload)
                 }
                 type="button"
+                disabled
               >
                 {imageUpload
                   ? "Utilizar URL de Imagem"
@@ -124,13 +125,13 @@ export default function Home() {
                 {imageUpload ? (
                   <input
                     type="file"
-                    name="file"
+                    name="imageFile"
                     accept="image/png, image/jpeg"
                   />
                 ) : (
                   <input
                     type="url"
-                    name="image"
+                    name="imageUrl"
                     aria-label="Coloque uma URL ou envie uma imagem para usarmos de capa"
                     placeholder="Coloque uma URL ou envie uma imagem  para usarmos de capa"
                     required

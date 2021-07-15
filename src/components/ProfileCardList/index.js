@@ -13,8 +13,8 @@ export default function ProfileCardList({ title, list }) {
         {list &&
           list.slice(0, 6).map(item => (
             <li key={item.id}>
-              <a href={item.link} target="_blank">
-                <img src={item.image} alt={item.title} />
+              <a href={item.url} target="_blank">
+                <img src={item.imageUrl} alt={item.title} />
                 <span>{item.title}</span>
               </a>
             </li>
