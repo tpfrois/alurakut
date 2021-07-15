@@ -74,9 +74,10 @@ export default function Home(client) {
 
     try {
       const { data } = await axios.post("/api/communities", community);
+
       setCommunities(oldCommunities => [
         ...oldCommunities,
-        { id: data.data.id, ...community },
+        { id: data.communities.id, ...community },
       ]);
     } catch (error) {
       console.error(error);
